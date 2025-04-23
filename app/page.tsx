@@ -16,9 +16,20 @@ export default function Home() {
   const [dialogMessage, setDialogMessage] = useState("");
   const [dialogType, setDialogType] = useState("");
 
+  const isValidWebhookURL = (url: string) => {
+    const slackWebhookRegex = /^https:\/\/hooks\.slack\.com\/services\/[A-Za-z0-9]+\/[A-Za-z0-9]+\/[A-Za-z0-9]+$/;
+    return slackWebhookRegex.test(url);
+  };  
 
   const handleSendMessage = async () => {
     if (!delayAmount || !message || !webhookURL) return;
+
+    if (!isValidWebhookURL(webhookURL)) {
+      setDialogMessage("Invalid Slack webhook URL!");
+      setDialogType("error");
+      setDialogOpen(true);
+      return;
+    }  
   
     const delayMilliseconds =
       delayUnit === "seconds"
@@ -103,7 +114,7 @@ export default function Home() {
             <p>{dialogMessage}</p>
           <Button 
             onClick={() => setDialogOpen(false)}
-            className="bg-green-700 hover:bg-green-800 text-white"
+            className={dialogType === "success" ? "bg-green-700 hover:bg-green-800 text-white" : "bg-red-700 hover:bg-red-800 text-white" }
             >
               OK
           </Button>
