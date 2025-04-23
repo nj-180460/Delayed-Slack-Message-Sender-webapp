@@ -30,7 +30,10 @@ const SlackMessageScheduler: React.FC = () => {
   const handleSendMessage = () => {
     const delayInMs = calculateDelayInMs();
     setTimeout(() => {
-      axios.post(webhookURL, { text: `from Neil's slack Bot: ${message}` })
+        // axios.post(webhookURL, { text: `From Neil's slack Bot: ${message}` })
+        // .then(() => alert('✅ Message sent successfully!'))
+        // .catch(err => alert(`❌ Failed to send message: ${err.message}`));
+      axios.post('https://delayed-slack-message-sender-webapp-3rbxafozz.vercel.app/send-message', { webhookURL, text: `From Neil's slack Bot: ${message}` })
         .then(() => alert('✅ Message sent successfully!'))
         .catch(err => alert(`❌ Failed to send message: ${err.message}`));
     }, delayInMs);
