@@ -1,14 +1,15 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+"use client";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectTrigger, SelectContent, SelectItem } from "@/components/ui/select";
 
 const SlackMessageScheduler: React.FC = () => {
-  const [delay, setDelay] = useState<number | ''>('');
-  const [unit, setUnit] = useState<string>('seconds');
-  const [message, setMessage] = useState<string>('');
-  const [webhookURL, setWebhookURL] = useState<string>('');
+  const [delay, setDelay] = useState<number | "">("");
+  const [unit, setUnit] = useState<string>("seconds");
+  const [message, setMessage] = useState<string>("");
+  const [webhookURL, setWebhookURL] = useState<string>("");
   const [isButtonDisabled, setIsButtonDisabled] = useState<boolean>(true);
 
   useEffect(() => {
@@ -21,21 +22,23 @@ const SlackMessageScheduler: React.FC = () => {
 
   const calculateDelayInMs = (): number => {
     switch (unit) {
-      case 'minutes': return Number(delay) * 60 * 1000;
-      case 'hours': return Number(delay) * 60 * 60 * 1000;
-      default: return Number(delay) * 1000;
+      case "minutes":
+        return Number(delay) * 60 * 1000;
+      case "hours":
+        return Number(delay) * 60 * 60 * 1000;
+      default:
+        return Number(delay) * 1000;
     }
   };
 
   const handleSendMessage = () => {
     const delayInMs = calculateDelayInMs();
+
     setTimeout(() => {
-        // axios.post(webhookURL, { text: `From Neil's slack Bot: ${message}` })
-        // .then(() => alert('✅ Message sent successfully!'))
-        // .catch(err => alert(`❌ Failed to send message: ${err.message}`));
-      axios.post(webhookURL, { text: `From Neil's slack Bot: ${message}` })
-        .then(() => alert('✅ Message sent successfully!'))
-        .catch(err => alert(`❌ Failed to send message: ${err.message}`));
+      axios
+        .post("/api/send-message", { webhookURL, message })
+        .then(() => alert("✅ Message sent successfully!"))
+        .catch((err) => alert(`❌ Failed to send message: ${err.message}`));
     }, delayInMs);
   };
 
@@ -67,7 +70,7 @@ const SlackMessageScheduler: React.FC = () => {
       </div>
 
       <Button onClick={handleSendMessage} disabled={isButtonDisabled} className="w-full bg-blue-500 text-white hover:bg-blue-600">
-        {delay ? `Send in ${delay} ${unit}` : 'Send'}
+        {delay ? `Send in ${delay} ${unit}` : "Send"}
       </Button>
     </div>
   );
